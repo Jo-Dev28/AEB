@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Connexion - AEB Ticket System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0f0f1a;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animation de fond */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .animated-bg span {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: float 15s infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.5;
+            }
+            90% {
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateY(-20vh) scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* Container principal */
+        .login-card {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 420px;
+            margin: 20px;
+            background: rgba(20, 20, 35, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: 35px;
+            padding: 45px 35px;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 215, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .login-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 55px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 215, 0, 0.4);
+        }
+
+        /* Header avec logo */
+        .card-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .logo-container {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        /* .logo-box {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.3);
+        } */
+
+        .logo-box img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+        }
+
+        .logo-box span {
+            font-size: 35px;
+        }
+
+        .logo-text {
+            text-align: left;
+        }
+
+        .logo-text h1 {
+            font-size: 24px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .logo-text p {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .event-badge {
+            display: inline-block;
+            background: rgba(255, 215, 0, 0.15);
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 11px;
+            color: #FFD700;
+            margin-top: 15px;
+        }
+
+        /* Formulaire */
+        .form-container {
+            margin-bottom: 25px;
+        }
+
+        .input-field {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .input-field label {
+            display: block;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 8px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .input-field input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1.5px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .input-field input:focus {
+            outline: none;
+            border-color: #FFD700;
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.15);
+        }
+
+        .input-field input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Options supplémentaires */
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            font-size: 12px;
+        }
+
+        .remember {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+        }
+
+        .remember input {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            accent-color: #FFD700;
+        }
+
+        .forgot {
+            color: #FFD700;
+            text-decoration: none;
+            font-size: 12px;
+            transition: color 0.3s;
+        }
+
+        .forgot:hover {
+            text-decoration: underline;
+        }
+
+        /* Bouton */
+        .btn-login {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border: none;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #1a1a2e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 215, 0, 0.3);
+        }
+
+        /* Message d'erreur */
+        .error-msg {
+            background: rgba(220, 53, 69, 0.15);
+            color: #ff6b6b;
+            text-align: center;
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 14px;
+            font-size: 13px;
+            border: 1px solid rgba(220, 53, 69, 0.3);
+        }
+
+        /* Section démo */
+        .demo-section {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            padding: 15px;
+            margin-top: 25px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .demo-title {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .demo-creds {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .cred-badge {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-family: monospace;
+            color: #FFD700;
+        }
+
+        .cred-badge span:first-child {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .logo-box img {
+            width: 63px;
+            height: 63px;
+            object-fit: contain;
+            }
+            .login-card {
+                padding: 35px 25px;
+                margin: 15px;
+                border-radius: 28px;
+            }
+            
+            .logo-box {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .logo-box span {
+                font-size: 28px;
+            }
+            
+            .logo-text h1 {
+                font-size: 15px;
+            }
+            
+            .logo-text p {
+                font-size: 9px;
+            }
+            
+            .input-field input {
+                padding: 12px 14px;
+            }
+            
+            .btn-login {
+                padding: 13px;
+                font-size: 15px;
+            }
+            
+            .form-options {
+                flex-direction: column;
+                gap: 12px;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animation de fond -->
+    <div class="animated-bg" id="animatedBg"></div>
+
+    <div class="login-card">
+        <div class="card-header">
+            <div class="logo-container">
+                <div class="logo-box">
+                    <!-- Pour mettre votre logo, décommentez la ligne ci-dessous et commentez l'autre -->
+                    <img src="logo.png" alt="Logo AEB">
+                    <!-- <span>🎓</span> -->
+                </div>
+                <div class="logo-text">
+                    <h1>AEB TICKETS</h1>
+                    <p>Event Management System</p>
+                </div>
+            </div>
+            <div class="event-badge">
+                🎟️ Excursion Scientifico-Récréative · 30 Mai 2026
+            </div>
+        </div>
+
+        <div class="form-container">
+            <form id="loginForm">
+                <div class="input-field">
+                    <label>Identifiant</label>
+                    <input type="text" id="username" placeholder="admin" autocomplete="off" required>
+                </div>
+                
+                <div class="input-field">
+                    <label>Mot de passe</label>
+                    <input type="password" id="password" placeholder="••••••" required>
+                </div>
+                
+                <div class="form-options">
+                    <label class="remember">
+                        <input type="checkbox" id="remember"> Se souvenir de moi
+                    </label>
+                    <a href="#" class="forgot">Mot de passe oublié ?</a>
+                </div>
+                
+                <button type="submit" class="btn-login">
+                    <span>🔓</span> Se connecter
+                </button>
+            </form>
+            
+            <div id="errorMsg" class="error-msg" style="display: none;"></div>
+        </div>
+
+        <div class="demo-section">
+            <div class="demo-title">🔐 ACCÈS DÉMO</div>
+            <div class="demo-creds">
+                <div class="cred-badge"><span>Identifiant</span> xxxxx</div>
+                <div class="cred-badge"><span>Mot de passe</span> xxxxxxxx</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>© 2026 Les anciens de l'Etoile Béthel | Tous droits réservés</p>
+        </div>
+    </div>
+
+    <script>
+        // Créer les particules d'animation
+        function createParticles() {
+            const container = document.getElementById('animatedBg');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('span');
+                const size = Math.random() * 20 + 5;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = Math.random() * 10 + 8 + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        createParticles();
+
+        // Gestion du formulaire
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorMsg = document.getElementById('errorMsg');
+            const remember = document.getElementById('remember').checked;
+
+            if (username === 'Maki Meso' && password === 'Makimeso@123') {
+                if (remember) {
+                    localStorage.setItem('rememberedUser', username);
+                } else {
+                    localStorage.removeItem('rememberedUser');
+                }
+                sessionStorage.setItem('loggedIn', 'true');
+                sessionStorage.setItem('username', username);
+                window.location.href = 'intro.html';
+            } else {
+                errorMsg.style.display = 'block';
+                errorMsg.textContent = '❌ Identifiant ou mot de passe incorrect';
+                setTimeout(() => {
+                    errorMsg.style.display = 'none';
+                }, 3000);
+            }
+        });
+
+        // Charger l'utilisateur mémorisé
+        const rememberedUser = localStorage.getItem('rememberedUser');
+        if (rememberedUser) {
+            document.getElementById('username').value = rememberedUser;
+            document.getElementById('remember').checked = true;
+        }
+    </script>
+</body>
+</html>

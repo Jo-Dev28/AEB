@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Statistiques et Tickets - AEB</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f0f2f5 0%, #e8ecf1 100%);
+            min-height: 100vh;
+        }
+
+        /* Header responsive */
+        .navbar {
+            background: linear-gradient(135deg, #000000, #1a1a2e);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            border-bottom: 4px solid #FFD700;
+        }
+
+        .logo {
+            color: #FFD700;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .logo span {
+            font-size: 22px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 7px 15px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: #FFD700;
+            color: #1a1a2e;
+            transform: translateY(-1px);
+        }
+
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 7px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #c82333;
+            transform: translateY(-1px);
+        }
+
+        /* Menu mobile */
+       /* ===== NAVBAR RESPONSIVE ===== */
+
+/* Bouton hamburger (caché sur desktop) */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 5px;
+}
+
+.hamburger span {
+    width: 25px;
+    height: 3px;
+    background: white;
+    margin: 3px 0;
+    border-radius: 3px;
+    transition: 0.3s;
+}
+
+/* Menu mobile (caché par défaut) */
+.mobile-menu {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    background: #1a1a2e;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+.mobile-menu a, .mobile-menu button {
+    padding: 10px;
+    text-align: center;
+    margin: 5px 0;
+    border-radius: 8px;
+}
+
+.mobile-menu a {
+    color: white;
+    text-decoration: none;
+}
+
+.mobile-menu a:hover {
+    background: #FFD700;
+    color: #000;
+}
+
+.mobile-menu button {
+    width: 100%;
+}
+
+/* Affichage sur mobile */
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+    }
+    
+    .hamburger {
+        display: flex;
+    }
+    
+    .mobile-menu.show {
+        display: flex;
+    }
+}
+
+        .container {
+            max-width: 1300px;
+            margin: 25px auto;
+            padding: 0 20px;
+        }
+
+        /* Stats header */
+        .stats-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 16px;
+            padding: 20px 25px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.25);
+        }
+
+        .stats-header h2 {
+            color: white;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .stats-header p {
+            color: rgba(255,255,255,0.85);
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .refresh-badge {
+            background: rgba(255,255,255,0.15);
+            padding: 8px 16px;
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .refresh-badge i {
+            font-size: 18px;
+            color: #FFD700;
+        }
+
+        .refresh-badge span {
+            font-size: 12px;
+            color: white;
+        }
+
+        /* Stats grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 8px;
+            border-radius: 16px;
+            text-align: center;
+            transition: all 0.3s;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+            border-bottom: 3px solid transparent;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.12);
+        }
+
+        .stat-card.total { border-bottom-color: #667eea; }
+        .stat-card.unused { border-bottom-color: #28a745; }
+        .stat-card.used { border-bottom-color: #17a2b8; }
+        .stat-card.revenue { border-bottom-color: #FFD700; }
+
+        .stat-icon { font-size: 20px; margin-bottom: 10px; }
+        .stat-number { font-size: 20px; font-weight: bold; margin: 10px 0; }
+        .stat-card.total .stat-number { color: #667eea; }
+        .stat-card.unused .stat-number { color: #28a745; }
+        .stat-card.used .stat-number { color: #17a2b8; }
+        .stat-card.revenue .stat-number { color: #FFA500; }
+        .stat-label { font-size: 13px; color: #888; font-weight: 500; }
+        .stat-sub { font-size: 11px; color: #aaa; margin-top: 5px; }
+
+        /* Section tableau */
+        .table-section {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+            margin-top: 20px;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .table-header h3 {
+            font-size: 18px;
+            color: #1a1a2e;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-box input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            width: 200px;
+            font-size: 13px;
+        }
+
+        .search-box button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 10px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #1a1a2e;
+            font-size: 13px;
+        }
+
+        td {
+            font-size: 13px;
+            color: #555;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-badge.used {
+            background: #dc3545;
+            color: white;
+        }
+
+        .status-badge.unused {
+            background: #28a745;
+            color: white;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .edit-btn {
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+
+        .edit-btn:hover, .delete-btn:hover {
+            opacity: 0.8;
+            transform: scale(0.98);
+        }
+
+        /* Modal d'édition */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .modal-content h3 {
+            margin-bottom: 15px;
+            color: #1a1a2e;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .save-btn {
+            background: #28a745;
+            color: white;
+        }
+
+        .cancel-btn {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-refresh {
+            background: linear-gradient(135deg, #17a2b8, #138496);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 13px;
+            margin-top: 15px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            color: #999;
+            font-size: 11px;
+            border-top: 1px solid #ddd;
+        }
+
+        @media (max-width: 750px) {
+            .nav-links { display: none; }
+            .hamburger { display: flex; }
+            .mobile-menu.show { display: flex; }
+            .stats-header { flex-direction: column; text-align: center; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
+            .stat-number { font-size: 28px; }
+        }
+
+        @media (max-width: 500px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .table-header { flex-direction: column; }
+            .search-box { width: 100%; }
+            .search-box input { flex: 1; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+             Les Anciens de l'Etoile Béthel
+        </div>
+        <div class="nav-links">
+            <a href="home.html">Accueil</a>
+            <a href="tickets.html">🎫 Tickets</a>
+            <a href="stats.html" class="active">📊 Statistiques</a>
+            <button class="logout-btn" onclick="logout()">Déconnexion</button>
+        </div>
+        <button class="hamburger" id="hamburgerBtn">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="home.html">🏠 Accueil</a>
+            <a href="tickets.html">🎫 Tickets</a>
+            <a href="stats.html">📊 Statistiques</a>
+            <button class="logout-btn" onclick="logout()">🚪 Déconnexion</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="stats-header">
+            <div>
+                <h2>📊 Tableau de bord</h2>
+                <p>Statistiques et gestion des tickets</p>
+            </div>
+            <div class="refresh-badge">
+                <i>🔄</i>
+                <span>Auto-actualisation toutes les 30s</span>
+            </div>
+        </div>
+
+        <div id="statsGrid" class="stats-grid">
+            <div style="text-align: center; padding: 40px;">Chargement...</div>
+        </div>
+
+        <div class="table-section">
+            <div class="table-header">
+                <h3>📋 Liste des tickets</h3>
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Rechercher un nom..." onkeyup="filterTickets()">
+                    <button onclick="loadTickets()">🔄</button>
+                </div>
+            </div>
+            <div class="table-wrapper">
+                <table id="ticketsTable">
+                    <thead>
+                        <tr><th>ID Ticket</th><th>Nom</th><th>Date</th><th>Lieu</th><th>Prix</th><th>Statut</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody id="ticketsTableBody">
+                        <tr><td colspan="7" style="text-align:center;">Chargement...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div style="text-align: center;">
+                <button class="btn-refresh" onclick="loadTickets()">🔄 Rafraîchir la liste</button>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>© 2026 Les anciens de l'Etoile Béthel (AEB)</p>
+        </div>
+    </div>
+
+    <!-- Modal d'édition -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <h3>✏️ Modifier le ticket</h3>
+            <input type="text" id="editTicketId" readonly style="background:#f0f0f0;">
+            <input type="text" id="editAttendeeName" placeholder="Nom du participant">
+            <div class="modal-buttons">
+                <button class="save-btn" onclick="saveEdit()">💾 Enregistrer</button>
+                <button class="cancel-btn" onclick="closeModal()">❌ Annuler</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+        let currentTickets = [];
+        let currentEditId = null;
+
+        async function loadStats() {
+            try {
+                const response = await fetch(`${API_URL}/stats`);
+                const stats = await response.json();
+                document.getElementById('statsGrid').innerHTML = `
+                    <div class="stat-card total"><div class="stat-icon">🎫</div><div class="stat-number">${stats.totalTickets}</div><div class="stat-label">Total Tickets</div><div class="stat-sub">billets générés</div></div>
+                    <div class="stat-card unused"><div class="stat-icon">✅</div><div class="stat-number">${stats.unusedTickets}</div><div class="stat-label">Non utilisés</div><div class="stat-sub">places disponibles</div></div>
+                    <div class="stat-card used"><div class="stat-icon">✓</div><div class="stat-number">${stats.usedTickets}</div><div class="stat-label">Utilisés</div><div class="stat-sub">entrées validées</div></div>
+                    <div class="stat-card revenue"><div class="stat-icon">💰</div><div class="stat-number">${stats.revenue.toLocaleString()} FC</div><div class="stat-label">Revenus totaux</div><div class="stat-sub">chiffre d'affaires</div></div>
+                `;
+            } catch (error) {
+                document.getElementById('statsGrid').innerHTML = '<p>❌ Erreur de chargement</p>';
+            }
+        }
+
+        async function loadTickets() {
+            try {
+                const response = await fetch(`${API_URL}/tickets`);
+                currentTickets = await response.json();
+                displayTickets(currentTickets);
+            } catch (error) {
+                document.getElementById('ticketsTableBody').innerHTML = '<tr><td colspan="7" style="text-align:center;">❌ Erreur de chargement</td></tr>';
+            }
+        }
+
+        function displayTickets(tickets) {
+            const tbody = document.getElementById('ticketsTableBody');
+            if (tickets.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">Aucun ticket</td></tr>';
+                return;
+            }
+            tbody.innerHTML = tickets.map(ticket => `
+                <tr>
+                    <td>${ticket.ticketId.substring(0, 12)}...</td>
+                    <td>${escapeHtml(ticket.attendeeName)}</td>
+                    <td>${ticket.eventDate}</td>
+                    <td>${ticket.eventLocation.substring(0, 15)}</td>
+                    <td>${ticket.price}</td>
+                    <td><span class="status-badge ${ticket.isUsed ? 'used' : 'unused'}">${ticket.isUsed ? '✓ Utilisé' : '○ Non utilisé'}</span></td>
+                    <td class="action-btns">
+                        <button class="edit-btn" onclick="openEditModal('${ticket._id}', '${escapeHtml(ticket.attendeeName)}')">✏️ Modifier</button>
+                        <button class="delete-btn" onclick="deleteTicket('${ticket._id}')">🗑 Supprimer</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function filterTickets() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = currentTickets.filter(ticket => 
+                ticket.attendeeName.toLowerCase().includes(searchTerm) ||
+                ticket.ticketId.toLowerCase().includes(searchTerm)
+            );
+            displayTickets(filtered);
+        }
+
+        function openEditModal(id, name) {
+            currentEditId = id;
+            document.getElementById('editTicketId').value = id;
+            document.getElementById('editAttendeeName').value = name;
+            document.getElementById('editModal').style.display = 'flex';
+        }
+
+        async function saveEdit() {
+            const newName = document.getElementById('editAttendeeName').value.trim();
+            if (!newName) {
+                alert('Le nom ne peut pas être vide');
+                return;
+            }
+            // Note: L'API backend ne supporte pas la modification directe
+            // On va supprimer et recréer ou faire une requête PUT
+            alert('⚠️ Modification via API à implémenter. Pour l\'instant, supprimez et recréez le ticket.');
+            closeModal();
+        }
+
+        async function deleteTicket(id) {
+            if (confirm('Supprimer définitivement ce ticket ?')) {
+                try {
+                    await fetch(`${API_URL}/tickets/${id}`, { method: 'DELETE' });
+                    alert('✅ Ticket supprimé');
+                    loadTickets();
+                    loadStats();
+                } catch (error) {
+                    alert('❌ Erreur lors de la suppression');
+                }
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('editModal').style.display = 'none';
+            currentEditId = null;
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+
+        function setupMobileMenu() {
+            const hamburgerBtn = document.getElementById('hamburgerBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            if (hamburgerBtn && mobileMenu) {
+                hamburgerBtn.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('show');
+                    const spans = this.querySelectorAll('span');
+                    if (mobileMenu.classList.contains('show')) {
+                        spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+                        spans[1].style.opacity = '0';
+                        spans[2].style.transform = 'rotate(-45deg) translate(5px, -5px)';
+                    } else {
+                        spans[0].style.transform = 'none';
+                        spans[1].style.opacity = '1';
+                        spans[2].style.transform = 'none';
+                    }
+                });
+            }
+        }
+
+        function logout() {
+            sessionStorage.removeItem('loggedIn');
+            sessionStorage.removeItem('username');
+            window.location.href = 'login.html';
+        }
+
+        if (!sessionStorage.getItem('loggedIn')) {
+            window.location.href = 'login.html';
+        }
+
+        setupMobileMenu();
+        loadStats();
+        loadTickets();
+        setInterval(() => { loadStats(); loadTickets(); }, 30000);
+    </script>
+</body>
+</html>

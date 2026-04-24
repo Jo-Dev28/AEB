@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des tickets - AEB</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-image: url('logos.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #000000, #1a1a2e);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            border-bottom: 2px solid #FFD700;
+        }
+
+        .logo {
+            color: #FFD700;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: #FFD700;
+            color: #000;
+        }
+
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        /* ===== NAVBAR RESPONSIVE ===== */
+
+/* Bouton hamburger (caché sur desktop) */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 5px;
+}
+
+.hamburger span {
+    width: 25px;
+    height: 3px;
+    background: white;
+    margin: 3px 0;
+    border-radius: 3px;
+    transition: 0.3s;
+}
+
+/* Menu mobile (caché par défaut) */
+.mobile-menu {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    background: #1a1a2e;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+.mobile-menu a, .mobile-menu button {
+    padding: 10px;
+    text-align: center;
+    margin: 5px 0;
+    border-radius: 8px;
+}
+
+.mobile-menu a {
+    color: white;
+    text-decoration: none;
+}
+
+.mobile-menu a:hover {
+    background: #FFD700;
+    color: #000;
+}
+
+.mobile-menu button {
+    width: 100%;
+}
+
+/* Affichage sur mobile */
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+    }
+    
+    .hamburger {
+        display: flex;
+    }
+    
+    .mobile-menu.show {
+        display: flex;
+    }
+}
+
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .card h2 {
+            color: #1a1a2e;
+            margin-bottom: 20px;
+            border-left: 4px solid #FFD700;
+            padding-left: 15px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: scale(1.02);
+        }
+
+        .names-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .name-tag {
+            background: #e0e0e0;
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .name-tag button {
+            background: #dc3545;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 50%;
+            font-size: 12px;
+        }
+
+        /* GRILLE POUR TICKETS HORIZONTAUX */
+        .tickets-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+            padding: 2px;
+        }
+
+        /* ========== TICKET HORIZONTAL AVEC LOGO ========== */
+        .ticket-horizontal-compact {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .ticket-horizontal-compact:hover {
+            transform: translateX(5px);
+            box-shadow: 0 6px 18px rgba(255, 215, 0, 0.15);
+            border-color: #FFD700;
+        }
+
+        /* Bande latérale gauche - LOGO */
+        .ticket-sidebar {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            width: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 5px;
+            text-align: center;
+        }
+
+        .logo-container {
+            margin-bottom: 8px;
+        }
+
+        .logo-image-small {
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-image-small img {
+            width: 140%;
+            height: 140%;
+            object-fit: cover;
+        }
+
+        /* .school-name-sidebar {
+            font-size: 8px;
+            font-weight: bold;
+            color: #000;
+            background: rgba(0,0,0,0.15);
+            padding: 4px 6px;
+            border-radius: 10px;
+            margin-top: 2px;
+            text-align: center;
+            text-transform: uppercase;
+        } */
+
+        .year-badge {
+            font-size: 14px;
+            font-weight: 900;
+            color: #000;
+            background: rgba(0,0,0,0.2);
+            padding: 3px 8px;
+            border-radius: 8px;
+            margin-bottom: 1px;
+        }
+
+        .time-badge {
+            font-size: 8px;
+            font-weight: bold;
+            color: #000;
+            background: rgba(0,0,0,0.2);
+            padding: 3px 6px;
+            border-radius: 6px;
+        }
+
+        /* Corps principal */
+        .ticket-main-content {
+            flex: 1;
+            padding: 10px 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Section info gauche */
+        .ticket-info-section {
+            flex: 2;
+            min-width: 180px;
+        }
+
+        .event-name-h {
+            font-size: 13px;
+            font-weight: 800;
+            color: #FFD700;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-row-h {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+            font-size: 9px;
+            color: #ccc;
+            flex-wrap: wrap;
+        }
+
+        .detail-label {
+            color: #888;
+            min-width: 35px;
+        }
+
+        .detail-value {
+            color: #FFD700;
+            font-weight: 500;
+        }
+
+        .activities-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin: 5px 0;
+        }
+
+        .activity-chip {
+            background: rgba(255, 215, 0, 0.12);
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 7px;
+            color: #FFD700;
+        }
+
+        /* Section prix et participant */
+        .ticket-price-section {
+            min-width: 100px;
+            text-align: center;
+            background: rgba(0,0,0,0.4);
+            padding: 8px;
+            border-radius: 10px;
+        }
+
+        .price-h {
+            font-size: 20px;
+            font-weight: bold;
+            color: #FFD700;
+        }
+
+        .price-label-h {
+            font-size: 7px;
+            color: #888;
+            margin-top: 2px;
+        }
+
+        .attendee-h {
+            font-size: 11px;
+            font-weight: bold;
+            color: #FFD700;
+            background: #000;
+            padding: 4px 8px;
+            border-radius: 15px;
+            margin-top: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Section QR Code */
+        .ticket-qr-section {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #0a0a0a;
+            padding: 18px 14px;
+            border-radius: 10px;
+            border-left: 1px solid #333;
+        }
+
+        .qr-h img {
+            width: 70px;
+            height: 70px;
+            background: white;
+            padding: 3px;
+            border-radius: 8px;
+        }
+
+        .ticket-id-h {
+            font-size: 7px;
+            color: #666;
+            text-align: center;
+        }
+
+        .status-h {
+            font-size: 7px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .status-h.used {
+            background: #dc3545;
+            color: white;
+        }
+
+        .status-h.unused {
+            background: #28a745;
+            color: white;
+        }
+
+        /* Footer avec nom école */
+        .ticket-footer-h {
+            background: #000;
+            padding: 6px 12px;
+            font-size: 8px;
+            color: #FFD700;
+            text-align: center;
+            border-top: 1px solid #222;
+            width: 100%;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 700px) {
+            .ticket-sidebar {
+                width: 65px;
+            }
+            .logo-image-small {
+                width: 40px;
+                height: 40px;
+            }
+            .school-name-sidebar {
+                font-size: 6px;
+            }
+            .ticket-main-content {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .ticket-price-section {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-wrap: wrap;
+            }
+            .ticket-qr-section {
+                justify-content: center;
+            }
+        }
+        
+    </style>
+</head>
+<body>
+   <nav class="navbar">
+        <div class="logo">Les Anciens de l'Etoile Béthel</div>
+        
+        <!-- Menu desktop existant -->
+        <div class="nav-links">
+            <a href="home.html">Accueil</a>
+            <a href="tickets.html" class="active">🎫 Tickets</a>
+            <a href="stats.html">📊 Statistiques</a>
+            <button class="logout-btn" onclick="logout()">Déconnexion</button>
+        </div>
+        
+        <!-- À AJOUTER : Bouton hamburger -->
+        <button class="hamburger" id="hamburgerBtn">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        
+        <!-- À AJOUTER : Menu mobile -->
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="home.html">🏠 Accueil</a>
+            <a href="tickets.html">🎫 Tickets</a>
+            <a href="stats.html">📊 Statistiques</a>
+            <button class="logout-btn" onclick="logout()">🚪 Déconnexion</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="card">
+            <h2>🎫 Générer des tickets</h2>
+            <div class="input-group">
+                <input type="text" id="nameInput" placeholder="Nom complet du participant">
+                <button onclick="addName()">+ Ajouter</button>
+            </div>
+            <div id="namesList" class="names-list"></div>
+            <button onclick="generateTickets()" style="width: 100%;">🎟️ Générer les tickets</button>
+        </div>
+
+        <div class="card">
+            <h2>📋 Tickets générés - Format Horizontal avec Logo</h2>
+            <div id="ticketsList" class="tickets-grid">
+                <p style="text-align:center; padding:40px;">Chargement...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+        let attendees = [];
+
+        const EVENT_DETAILS = {
+            name: "AEB EXCURSION NIGHT",
+            fullName: "EXCURSION SCIENTIFICO-RECREATIVE",
+            date: "30 MAI 2026",
+            time: "13h30",
+            endTime: "22h00",
+            location: "PLAGE ROYALE MOTUMBÉ",
+            address: "Route de la Corniche, Kinshasa",
+            price: "15 000 FC",
+            contact: "+243 123 456 789",
+            email: "aeb@evenement.com",
+            activities: ["JEUX", "CONFÉRENCE", "MUSIQUE", "DANSE", "VISITE", "MISS", "COCKTAIL", "AUTRES"]
+        };
+
+        function addName() {
+            const input = document.getElementById('nameInput');
+            const name = input.value.trim();
+            if (name) {
+                attendees.push(name);
+                updateNamesList();
+                input.value = '';
+            }
+        }
+
+        function removeName(index) {
+            attendees.splice(index, 1);
+            updateNamesList();
+        }
+
+        function updateNamesList() {
+            const container = document.getElementById('namesList');
+            if (attendees.length === 0) {
+                container.innerHTML = '<p style="color:#999;">Aucun participant</p>';
+                return;
+            }
+            let html = '';
+            for (let i = 0; i < attendees.length; i++) {
+                html += '<div class="name-tag">👤 ' + escapeHtml(attendees[i]) + '<button onclick="removeName(' + i + ')">✖</button></div>';
+            }
+            container.innerHTML = html;
+        }
+
+        async function generateTickets() {
+            if (attendees.length === 0) {
+                alert('Ajoutez au moins un nom');
+                return;
+            }
+
+            try {
+                const response = await fetch(API_URL + '/tickets/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        attendees: attendees,
+                        eventDetails: EVENT_DETAILS
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('✅ ' + data.message);
+                    attendees = [];
+                    updateNamesList();
+                    loadTickets();
+                } else {
+                    alert('Erreur: ' + (data.error || 'Génération échouée'));
+                }
+            } catch (error) {
+                alert('❌ Erreur de connexion au serveur');
+            }
+        }
+
+        async function loadTickets() {
+            try {
+                const response = await fetch(API_URL + '/tickets');
+                const tickets = await response.json();
+
+                const container = document.getElementById('ticketsList');
+                if (tickets.length === 0) {
+                    container.innerHTML = '<p style="text-align:center; padding:40px;">Aucun ticket généré</p>';
+                    return;
+                }
+
+                let html = '';
+                for (let i = 0; i < tickets.length; i++) {
+                    const ticket = tickets[i];
+                    const statusClass = ticket.isUsed ? 'used' : 'unused';
+                    const statusText = ticket.isUsed ? '✓ UTILISÉ' : '○ VALIDE';
+                    const currentYear = new Date().getFullYear().toString().substr(-2);
+                    
+                    html += '<div class="ticket-horizontal-compact" data-id="' + ticket._id + '">';
+                    
+                    // Bande latérale gauche - LOGO et NOM ECOLE
+                    html += '<div class="ticket-sidebar">';
+                    html += '<div class="logo-container">';
+                    html += '<div class="logo-image-small">';
+                    // Remplacez 'logo.png' par le chemin de votre image logo
+                    html += '<img src="logo.png" alt="AEB Logo" onerror="this.src=\'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'50\' height=\'50\' viewBox=\'0 0 100 100\'%3E%3Ccircle cx=\'50\' cy=\'50\' r=\'45\' fill=\'%23FFD700\'/%3E%3Ctext x=\'50\' y=\'67\' text-anchor=\'middle\' font-size=\'40\' fill=\'%23000\'%3E🎓%3C/text%3E%3C/svg%3E\'">';
+                    html += '</div>';
+                    html += '</div>';
+                    // html += '<div class="school-name-sidebar">LES AEB</div>';
+                    // html += '<div class="year-badge">20' + currentYear + '</div>';
+                    // html += '<div class="time-badge">' + ticket.eventTime + '</div>';
+                    html += '</div>';
+                    
+                    // Contenu principal
+                    html += '<div class="ticket-main-content">';
+                    
+                    // Section informations
+                    html += '<div class="ticket-info-section">';
+                    html += '<div class="event-name-h">' + EVENT_DETAILS.fullName + '</div>';
+                    html += '<div class="detail-row-h">';
+                    html += '<span class="detail-label">📅</span>';
+                    html += '<span class="detail-value">' + ticket.eventDate + '</span>';
+                    html += '</div>';
+                    html += '<div class="detail-row-h">';
+                    html += '<span class="detail-label">📍</span>';
+                    html += '<span class="detail-value">' + ticket.eventLocation + '</span>';
+                    html += '</div>';
+                    html += '<div class="detail-row-h">';
+                    html += '<span class="detail-label">🕑</span>';
+                    html += '<span class="detail-value">' + ticket.eventTime + '</span>';
+                    html += '</div>';
+                    
+                    html += '<div class="detail-row-h">';
+                    html += '<span class="detail-label">🎫</span>';
+                    html += '<span class="detail-value">' + ticket.ticketId.substring(0, 12) + '</span>';
+                    html += '</div>';
+                    html += '<div class="activities-row">';
+                    for (let a = 0; a < EVENT_DETAILS.activities.length; a++) {
+                        html += '<span class="activity-chip">' + EVENT_DETAILS.activities[a] + '</span>';
+                    }
+                    html += '</div>';
+                    html += '</div>';
+                    
+                    // Section prix et participant
+                    html += '<div class="ticket-price-section">';
+                    html += '<div class="price-h">' + ticket.price + '</div>';
+                    html += '<div class="price-label-h">PRIX</div>';
+                    html += '<div class="attendee-h">🎟️ ' + escapeHtml(ticket.attendeeName) + '</div>';
+                    html += '</div>';
+                    
+                    // Section QR Code
+                    html += '<div class="ticket-qr-section">';
+                    if (ticket.qrCode) {
+                        html += '<div class="qr-h"><img src="' + ticket.qrCode + '" alt="QR"></div>';
+                    }
+                    html += '<div>';
+                    html += '<div class="ticket-id-h">#' + ticket.ticketId.substring(0, 8) + '</div>';
+                    html += '<div class="status-h ' + statusClass + '">' + statusText + '</div>';
+                    html += '</div>';
+                    html += '</div>';
+                    
+                    html += '</div>'; // fin ticket-main-content
+                    
+                    // Footer avec nom complet de l'école
+                    html += '<div class="ticket-footer-h">';
+                    html += '🎓 LES ANCIENS DE L\'ETOILE BÉTHEL (AEB) | 🍸 Good Moments | 📞 +243 830301937';
+                    html += '</div>';
+                    
+                    html += '</div>';
+                }
+                container.innerHTML = html;
+            } catch (error) {
+                document.getElementById('ticketsList').innerHTML = '<p>❌ Erreur de chargement</p>';
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+        // Menu hamburger
+        function setupMobileMenu() {
+            const hamburgerBtn = document.getElementById('hamburgerBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            
+            if (hamburgerBtn && mobileMenu) {
+                hamburgerBtn.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('show');
+                    
+                    // Animation du bouton (optionnel)
+                    const spans = this.querySelectorAll('span');
+                    if (mobileMenu.classList.contains('show')) {
+                        spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+                        spans[1].style.opacity = '0';
+                        spans[2].style.transform = 'rotate(-45deg) translate(5px, -5px)';
+                    } else {
+                        spans[0].style.transform = 'none';
+                        spans[1].style.opacity = '1';
+                        spans[2].style.transform = 'none';
+                    }
+                });
+            }
+        }
+
+        // Appeler la fonction après le chargement
+        setupMobileMenu();
+
+        function logout() {
+            sessionStorage.removeItem('loggedIn');
+            window.location.href = 'login.html';
+        }
+
+        if (!sessionStorage.getItem('loggedIn')) {
+            window.location.href = 'login.html';
+        }
+
+        loadTickets();
+    </script>
+</body>
+</html>

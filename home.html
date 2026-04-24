@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Accueil - AEB Ticket System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f0f2f5 0%, #e8ecf1 100%);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .navbar {
+            background: linear-gradient(135deg, #000000, #1a1a2e);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            border-bottom: 4px solid #FFD700;
+
+        }
+
+        .logo {
+            color: #FFD700;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .logo span {
+            font-size: 22px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 7px 15px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: #FFD700;
+            color: #1a1a2e;
+            transform: translateY(-1px);
+        }
+
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 7px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #c82333;
+            transform: translateY(-1px);
+        }
+
+        /* Menu mobile */
+        /* ===== NAVBAR RESPONSIVE ===== */
+
+/* Bouton hamburger (caché sur desktop) */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 5px;
+}
+
+.hamburger span {
+    width: 25px;
+    height: 3px;
+    background: white;
+    margin: 3px 0;
+    border-radius: 3px;
+    transition: 0.3s;
+}
+
+/* Menu mobile (caché par défaut) */
+.mobile-menu {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    background: #1a1a2e;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+.mobile-menu a, .mobile-menu button {
+    padding: 10px;
+    text-align: center;
+    margin: 5px 0;
+    border-radius: 8px;
+}
+
+.mobile-menu a {
+    color: white;
+    text-decoration: none;
+}
+
+.mobile-menu a:hover {
+    background: #FFD700;
+    color: #000;
+}
+
+.mobile-menu button {
+    width: 100%;
+}
+
+/* Affichage sur mobile */
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+    }
+    
+    .hamburger {
+        display: flex;
+    }
+    
+    .mobile-menu.show {
+        display: flex;
+    }
+}
+
+        .container {
+            max-width: 1100px;
+            margin: 25px auto;
+            padding: 0 20px;
+        }
+
+        /* Carte bienvenue */
+        .welcome-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 16px;
+            padding: 20px 25px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.25);
+        }
+
+        .welcome-text h3 {
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .welcome-text h3 span {
+            color: #FFD700;
+            font-weight: bold;
+        }
+
+        .welcome-text p {
+            color: rgba(255,255,255,0.85);
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .avatar-badge {
+            background: rgba(255,255,255,0.15);
+            padding: 8px 16px;
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .avatar-badge i {
+            font-size: 24px;
+            color: #FFD700;
+        }
+
+        .avatar-badge span {
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+        }
+
+        /* Hero section */
+        .hero {
+            background: white;
+            border-radius: 20px;
+            padding: 30px 35px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+
+        .hero h1 {
+            font-size: 32px;
+            color: #1a1a2e;
+            margin-bottom: 10px;
+        }
+
+        .hero h1 span {
+            color: #FFD700;
+        }
+
+        .hero p {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .event-details {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 15px 0 20px;
+        }
+
+        .detail-item {
+            background: #f5f5f5;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .detail-item i {
+            color: #FFD700;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #1a1a2e;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+            margin-top: 5px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255,215,0,0.3);
+        }
+
+        /* CARTA - taille moyenne */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 22px 18px;
+            border-radius: 16px;
+            text-align: center;
+            transition: all 0.3s;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+            border-bottom: 3px solid transparent;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-bottom-color: #FFD700;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .feature-card .icon {
+            font-size: 45px;
+            margin-bottom: 12px;
+        }
+
+        .feature-card h3 {
+            font-size: 17px;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .feature-card p {
+            font-size: 12px;
+            color: #888;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 35px;
+            color: #999;
+            font-size: 11px;
+            border-top: 1px solid #ddd;
+        }
+
+        /* Responsive */
+        @media (max-width: 750px) {
+            .nav-links {
+                display: none;
+            }
+            .hamburger {
+                display: flex;
+            }
+            .mobile-menu.show {
+                display: flex;
+            }
+            .hero h1 {
+                font-size: 26px;
+            }
+            .hero {
+                padding: 25px 20px;
+            }
+            .cards-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+            .welcome-card {
+                flex-direction: column;
+                text-align: center;
+            }
+            .event-details {
+                gap: 10px;
+            }
+            .detail-item {
+                font-size: 11px;
+                padding: 5px 12px;
+            }
+            .hero h1 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            Les Anciens de l'Etoile Béthel
+        </div>
+        
+        <div class="nav-links">
+            <a href="home.html" class="active">Accueil</a>
+            <a href="tickets.html">🎫 Tickets</a>
+            <a href="stats.html">📊 Statistiques</a>
+            <button class="logout-btn" onclick="logout()">Déconnexion</button>
+        </div>
+        
+        <button class="hamburger" id="hamburgerBtn">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="home.html">🏠 Accueil</a>
+            <a href="tickets.html">🎫 Tickets</a>
+            <a href="stats.html">📊 Statistiques</a>
+            <button class="logout-btn" onclick="logout()">🚪 Déconnexion</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Carte bienvenue -->
+        <div class="welcome-card">
+            <div class="welcome-text">
+                <h3>Bonjour, <span id="usernameDisplay">Invité</span> ! 👋</h3>
+                <p>Bienvenue sur votre espace de billetterie AEB</p>
+            </div>
+            <div class="avatar-badge">
+                <i>👤</i>
+                <span id="avatarName">Invité</span>
+            </div>
+        </div>
+
+        <!-- Hero -->
+        <div class="hero">
+            <h1>✨ <span>Excursion</span> Scientifico-Récréative ✨</h1>
+            <p>Une journée inoubliable alliant science, divertissement et convivialité</p>
+            
+            <div class="event-details">
+                <div class="detail-item"><i>📅</i> 30 Mai 2026</div>
+                <div class="detail-item"><i>⏰</i> 14h00 - 22h00</div>
+                <div class="detail-item"><i>📍</i> Plage royale Motumbé</div>
+                <div class="detail-item"><i>💰</i> 15 000 FC</div>
+            </div>
+            
+            <a href="tickets.html" class="btn-primary">
+                🎟️ Générer vos tickets →
+            </a>
+        </div>
+
+        <!-- Features - cartes taille moyenne -->
+        <div class="cards-grid">
+            <div class="feature-card">
+                <div class="icon">🎫</div>
+                <h3>Génération rapide</h3>
+                <p>Créez des tickets personnalisés avec QR code intégré en quelques secondes</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">📥</div>
+                <h3>Téléchargement</h3>
+                <p>Sauvegardez vos tickets au format HTML et partagez-les facilement</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">📊</div>
+                <h3>Statistiques</h3>
+                <p>Suivez vos ventes, le nombre de tickets utilisés et vos revenus</p>
+            </div>
+            <!-- <div class="feature-card">
+                <div class="icon">✅</div>
+                <h3>Validation</h3>
+                <p>Validez les tickets à l'entrée et gérez les participants efficacement</p>
+            </div> -->
+        </div>
+        
+        <div class="footer">
+            <p>© 2026 Les anciens de l'Etoile Béthel (AEB) - Tous droits réservés</p>
+            <p style="margin-top: 5px;">📞 +243 123 456 789 | ⚙️ Josbosimwenda@gmail.com</p>
+        </div>
+    </div>
+
+    <script>
+        function getUserName() {
+            let username = sessionStorage.getItem('username');
+            if (!username) {
+                username = 'Administrateur';
+                sessionStorage.setItem('username', username);
+            }
+            return username;
+        }
+        
+        function displayUserName() {
+            const userName = getUserName();
+            const usernameDisplay = document.getElementById('usernameDisplay');
+            const avatarName = document.getElementById('avatarName');
+            if (usernameDisplay) usernameDisplay.innerText = userName;
+            if (avatarName) avatarName.innerText = userName;
+        }
+        
+        function setupMobileMenu() {
+            const hamburgerBtn = document.getElementById('hamburgerBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            
+            if (hamburgerBtn && mobileMenu) {
+                hamburgerBtn.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('show');
+                    const spans = this.querySelectorAll('span');
+                    if (mobileMenu.classList.contains('show')) {
+                        spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+                        spans[1].style.opacity = '0';
+                        spans[2].style.transform = 'rotate(-45deg) translate(5px, -5px)';
+                    } else {
+                        spans[0].style.transform = 'none';
+                        spans[1].style.opacity = '1';
+                        spans[2].style.transform = 'none';
+                    }
+                });
+            }
+        }
+        
+        function logout() {
+            sessionStorage.removeItem('loggedIn');
+            sessionStorage.removeItem('username');
+            window.location.href = 'login.html';
+        }
+        
+        if (!sessionStorage.getItem('loggedIn')) {
+            window.location.href = 'login.html';
+        }
+        
+        displayUserName();
+        setupMobileMenu();
+    </script>
+</body>
+</html>

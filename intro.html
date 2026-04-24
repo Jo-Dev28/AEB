@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Bienvenue - AEB Ticket System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        .intro-container {
+            text-align: center;
+            padding: 40px;
+            animation: fadeInUp 1s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo-animation {
+            margin-bottom: 30px;
+        }
+
+        .logo-circle {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 40px rgba(255, 215, 0, 0.8);
+            }
+        }
+
+        .logo-circle span {
+            font-size: 65px;
+        }
+
+        .welcome-text {
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .welcome-text h1 {
+            font-size: 42px;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .welcome-text p {
+            font-size: 18px;
+            opacity: 0.8;
+        }
+
+        .event-info {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin: 40px 0;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px 30px;
+            border-radius: 20px;
+            text-align: center;
+            min-width: 150px;
+        }
+
+        .info-card i {
+            font-size: 40px;
+            color: #FFD700;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .info-card h3 {
+            color: white;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .info-card p {
+            color: #FFD700;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .btn-continue {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border: none;
+            padding: 15px 45px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #1a1a2e;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+
+        .btn-continue:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.4);
+        }
+
+        .countdown {
+            margin-top: 40px;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .countdown span {
+            color: #FFD700;
+            font-weight: bold;
+        }
+
+        @media (max-width: 600px) {
+            .welcome-text h1 {
+                font-size: 28px;
+            }
+            .welcome-text p {
+                font-size: 14px;
+            }
+            .info-card {
+                padding: 15px 20px;
+                min-width: 120px;
+            }
+            .info-card i {
+                font-size: 30px;
+            }
+            .btn-continue {
+                padding: 12px 35px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="intro-container">
+        <div class="logo-animation">
+            <div class="logo-circle">
+                <span>🎓</span>
+            </div>
+        </div>
+
+        <div class="welcome-text">
+            <h1>Bienvenue, <span id="userName">Invité</span> !</h1>
+            <p>Content de vous revoir sur votre espace de billetterie AEB</p>
+        </div>
+
+        <!-- <div class="event-info">
+            <div class="info-card">
+                <i>📅</i>
+                <h3>Date</h3>
+                <p>30 Mai 2026</p>
+            </div>
+            <div class="info-card">
+                <i>📍</i>
+                <h3>Lieu</h3>
+                <p>Plage royale Motumbé</p>
+            </div>
+            <div class="info-card">
+                <i>💰</i>
+                <h3>Tarif</h3>
+                <p>15 000 FC</p>
+            </div>
+        </div> -->
+
+        <button class="btn-continue" onclick="continueToHome()">
+            🎟️ Accéder L'espace →
+        </button>
+
+        <div class="countdown">
+            Redirection automatique dans <span id="countdown">5</span> secondes
+        </div>
+    </div>
+
+    <script>
+        // Récupérer le nom de l'utilisateur
+        const userName = sessionStorage.getItem('username') || 'Invité';
+        document.getElementById('userName').innerText = userName;
+
+        // Compte à rebours
+        let seconds = 5;
+        const countdownEl = document.getElementById('countdown');
+        
+        const interval = setInterval(() => {
+            seconds--;
+            countdownEl.textContent = seconds;
+            if (seconds <= 0) {
+                clearInterval(interval);
+                window.location.href = 'home.html';
+            }
+        }, 1000);
+
+        function continueToHome() {
+            window.location.href = 'home.html';
+        }
+    </script>
+</body>
+</html>
